@@ -3,23 +3,29 @@ import { useParams } from 'react-router-dom';
 import {client } from '../amplifyClient';
 import Confetti from 'react-confetti';
 import { Square } from './Square';
+import { getPlayerId, getRole } from '../utils/player';
+import { useNavigate } from 'react-router-dom';
 
 export const GameBoard: React.FC = () => {
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<any>(null);
   const [playerSymbol, setPlayerSymbol] = useState<'X' | 'O'>('X');
-
+  const navigate = useNavigate()
   // Fetch game and subscribe
   useEffect(() => {
     if (!gameId) return;
-
+    const pid = getPlayerId();
+    const role = getRole(gameId);
     const fetchGame = async () => {
       const result = await client.models.Game.get({ id: gameId });
       setGame(result.data ?? null);
 
-      // Assign player symbol
-      if (result.data?.playerX && !result.data?.playerO) setPlayerSymbol('O');
-      else setPlayerSymbol('X');
+      if(role === 'X') setPlayerSymbol('X');
+      else if(role === 'O') setPlayerSymbol('O');
+      else {
+        alert("You haven't joined this game yet. Returning to lobby.");
+        navigate("/");
+      }
     };
 
     fetchGame();

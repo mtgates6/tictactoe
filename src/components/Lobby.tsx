@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { client } from '../amplifyClient';
+import { setRole } from '../utils/player';
 
 interface GameSummary {
   id: string;
@@ -40,7 +41,7 @@ export const Lobby: React.FC = () => {
 
   // Create a new game
   const createGame = async () => {
-    console.log('[Lobby] create:start');
+    
     try {
       const result = await client.models.Game.create({
         playerX: 'Player X',
@@ -50,8 +51,11 @@ export const Lobby: React.FC = () => {
         winner: null
       });
       const newGameId = result.data?.id;
-      console.log('[Lobby] create:success', { id: newGameId });
-      if (newGameId) navigate(`/game/${newGameId}`);
+      
+      if (newGameId) {
+        setRole(newGameId,'X')
+        navigate(`/game/${newGameId}`);
+      }
     } catch (error) {
       console.error('[Lobby] create:error', error);
     }
@@ -66,7 +70,7 @@ export const Lobby: React.FC = () => {
       console.log('[Lobby] join:loaded', { hasX: !!game?.playerX, hasO: !!game?.playerO });
       if (game?.playerX && !game?.playerO) {
         await client.models.Game.update({ id: gameId, playerO: 'Player O' });
-        console.log('[Lobby] join:updated O');
+        setRole(gameId, 'O');
       }
       navigate(`/game/${gameId}`);
     } catch (error) {
