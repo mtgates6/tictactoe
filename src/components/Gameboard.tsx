@@ -81,6 +81,40 @@ export const GameBoard: React.FC = () => {
           <Square key={idx} value={value} onClick={() => handleClick(idx)} />
         ))}
       </div>
+      {game.winner && (
+  <button
+    style={{
+      marginTop: '1rem',
+      padding: '0.5rem 1rem',
+      fontSize: '1rem',
+      backgroundColor: '#1976d2',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    }}
+    onClick={async () => {
+      if (!gameId) return;
+
+      const emptyBoard = Array(9).fill(null);
+      await client.models.Game.update({
+        id: gameId,
+        board: emptyBoard,
+        currentTurn: 'X',
+        winner: null,
+      });
+
+      setGame({
+        ...game,
+        board: emptyBoard,
+        currentTurn: 'X',
+        winner: null,
+      });
+    }}
+  >
+    Play Again
+  </button>
+)}
     </div>
   );
 };
