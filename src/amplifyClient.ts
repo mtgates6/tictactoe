@@ -7,22 +7,15 @@ import { generateClient, type Client } from 'aws-amplify/data';
 let client: Client<Schema>;
 
 if (import.meta.env.VITE_USE_LOCAL_AMPLIFY === 'true') {
-  const initClient = async () => {
+   (async () => {
     const amplifyModule = await import('../amplify_outputs.json');
-    const amplifyOutputs = amplifyModule.default;
+    const amplifyOutputs = amplifyModule.default; // unwrap default
     Amplify.configure(amplifyOutputs);
-  };
-  void initClient();
+  })();
 } else {
-    // Configure Amplify minimally so generateClient can work in deployed environment
-    Amplify.configure({
-        API: {
-            GraphQL: {
-            endpoint: import.meta.env.VITE_GRAPHQL_ENDPOINT ?? '',
-            defaultAuthMode: 'apiKey', 
-            },
-        },
-    });
+    if (!import.meta.env.VITE_GRAPHQL_ENDPOINT) {
+    throw new Error('VITE_GRAPHQL_ENDPOINT must be set for deployed environment');
+  }
 }
 
 client = generateClient<Schema>();
