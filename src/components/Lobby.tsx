@@ -36,10 +36,10 @@ export const Lobby: React.FC = () => {
   const createGame = async () => {
     const result = await client.models.Game.create({
       playerX: 'Player X',
-      playerO: '',
-      board: Array(9).fill(''),
+      playerO: null,
+      board: Array(9).fill(null),
       currentTurn: 'X',
-      winner: ''
+      winner: null
     });
     const newGameId = result.data?.id;
     if (newGameId) navigate(`/game/${newGameId}`);

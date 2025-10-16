@@ -2,11 +2,14 @@ import type { Schema } from '../amplify/data/resource';
 import { generateClient, type Client } from 'aws-amplify/data';
 import { Amplify } from 'aws-amplify';
 
-// Prefer amplify_outputs.json in all environments; fallback to env vars
-try {
-  const outputs = await import('../amplify_outputs.json');
-  Amplify.configure(outputs.default);
-} catch {
+// Prefer amplify_outputs.json when present; fallback to env vars
+const outputsMatch = import.meta.glob('../amplify_outputs.json', { eager: true });
+const outputsModule = outputsMatch['../amplify_outputs.json'] as any | undefined;
+const resolvedOutputs = outputsModule?.default ?? outputsModule;
+
+if (resolvedOutputs) {
+  Amplify.configure(resolvedOutputs);
+} else {
   if (!import.meta.env.VITE_GRAPHQL_ENDPOINT) {
     throw new Error('VITE_GRAPHQL_ENDPOINT must be set when amplify_outputs.json is not available');
   }

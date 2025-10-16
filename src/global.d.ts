@@ -4,3 +4,9 @@ declare module '@amplifyClient' {
 
   export const client: Client<Schema>;
 }
+
+// Allow importing JSON modules without type errors (used for optional amplify_outputs.json)
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
