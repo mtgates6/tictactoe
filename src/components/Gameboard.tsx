@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import {client } from '../amplifyClient';
 import Confetti from 'react-confetti';
 import { Square } from './Square';
-import { getPlayerId, getRole } from '../utils/player';
+import { getRole } from '../utils/player';
 import { useNavigate } from 'react-router-dom';
 
 export const GameBoard: React.FC = () => {
