@@ -14,7 +14,7 @@ export const GameBoard: React.FC = () => {
   // Fetch game and subscribe
   useEffect(() => {
     if (!gameId) return;
-    const pid = getPlayerId();
+    //const pid = getPlayerId();
     const role = getRole(gameId);
     const fetchGame = async () => {
       const result = await client.models.Game.get({ id: gameId });
