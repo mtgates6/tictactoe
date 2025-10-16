@@ -47,7 +47,6 @@ amplifytools.xcconfig
 
 # amplify
 .amplify
-amplify_outputs*
 amplifyconfiguration*
 
 
