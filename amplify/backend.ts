@@ -1,11 +1,7 @@
 import { defineBackend } from '@aws-amplify/backend';
-import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { auth } from './auth/resource'; // optional if you later add Cognito
 
-/**
- * @see https://docs.amplify.aws/react/build-a-backend/ to add storage, functions, and more
- */
-defineBackend({
-  auth,
+export const backend = defineBackend({
   data,
 });
