@@ -49,3 +49,7 @@ amplifytools.xcconfig
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+
+#localclient
+amplifyClient.dev.ts
