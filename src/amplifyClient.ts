@@ -18,7 +18,7 @@ if (import.meta.env.VITE_USE_LOCAL_AMPLIFY === 'true') {
     Amplify.configure({
         API: {
             GraphQL: {
-            endpoint: process.env.VITE_GRAPHQL_ENDPOINT ?? '',
+            endpoint: import.meta.env.VITE_GRAPHQL_ENDPOINT ?? '',
             defaultAuthMode: 'apiKey', 
             },
         },
