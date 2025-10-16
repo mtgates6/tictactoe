@@ -14,18 +14,24 @@ export const Lobby: React.FC = () => {
 
   // Fetch open games from backend
   const fetchGames = async () => {
-    const result = await client.models.Game.list({
-      filter: { winner: { eq: undefined } } // only active games
-    });
-    setGames(
-      (result.data ?? [])
-        .filter((g: any) => g.id !== null)
-        .map((g: any) => ({
-          id: g.id as string,
-          playerX: g.playerX,
-          playerO: g.playerO
-        }))
-    );
+    console.log('[Lobby] list:start');
+    try {
+      const result = await client.models.Game.list({
+        filter: { winner: { eq: undefined } }
+      });
+      console.log('[Lobby] list:success', { count: (result.data ?? []).length });
+      setGames(
+        (result.data ?? [])
+          .filter((g: any) => g.id !== null)
+          .map((g: any) => ({
+            id: g.id as string,
+            playerX: g.playerX,
+            playerO: g.playerO
+          }))
+      );
+    } catch (error) {
+      console.error('[Lobby] list:error', error);
+    }
   };
 
   useEffect(() => {
@@ -34,25 +40,38 @@ export const Lobby: React.FC = () => {
 
   // Create a new game
   const createGame = async () => {
-    const result = await client.models.Game.create({
-      playerX: 'Player X',
-      playerO: null,
-      board: Array(9).fill(null),
-      currentTurn: 'X',
-      winner: null
-    });
-    const newGameId = result.data?.id;
-    if (newGameId) navigate(`/game/${newGameId}`);
+    console.log('[Lobby] create:start');
+    try {
+      const result = await client.models.Game.create({
+        playerX: 'Player X',
+        playerO: null,
+        board: Array(9).fill(null),
+        currentTurn: 'X',
+        winner: null
+      });
+      const newGameId = result.data?.id;
+      console.log('[Lobby] create:success', { id: newGameId });
+      if (newGameId) navigate(`/game/${newGameId}`);
+    } catch (error) {
+      console.error('[Lobby] create:error', error);
+    }
   };
 
   // Join an existing game
   const joinGame = async (gameId: string) => {
-    const gameResult = await client.models.Game.get({ id: gameId });
-    const game = gameResult.data;
-    if (game?.playerX && !game?.playerO) {
-      await client.models.Game.update({ id: gameId, playerO: 'Player O' });
+    console.log('[Lobby] join:start', { gameId });
+    try {
+      const gameResult = await client.models.Game.get({ id: gameId });
+      const game = gameResult.data;
+      console.log('[Lobby] join:loaded', { hasX: !!game?.playerX, hasO: !!game?.playerO });
+      if (game?.playerX && !game?.playerO) {
+        await client.models.Game.update({ id: gameId, playerO: 'Player O' });
+        console.log('[Lobby] join:updated O');
+      }
+      navigate(`/game/${gameId}`);
+    } catch (error) {
+      console.error('[Lobby] join:error', error);
     }
-    navigate(`/game/${gameId}`);
   };
 
   return (

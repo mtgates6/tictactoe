@@ -9,6 +9,12 @@ const resolvedOutputs = outputsModule?.default ?? outputsModule;
 
 if (resolvedOutputs) {
   Amplify.configure(resolvedOutputs);
+  // Basic diagnostics to confirm configuration in the deployed app
+  try {
+    // @ts-ignore safe optional log
+    const endpoint = resolvedOutputs?.aws_appsync_graphqlEndpoint || resolvedOutputs?.API?.GraphQL?.endpoint;
+    console.log('[Amplify] configured from amplify_outputs.json', { endpoint });
+  } catch {}
 } else {
   if (!import.meta.env.VITE_GRAPHQL_ENDPOINT) {
     throw new Error('VITE_GRAPHQL_ENDPOINT must be set when amplify_outputs.json is not available');
@@ -22,6 +28,10 @@ if (resolvedOutputs) {
         apiKey: import.meta.env.VITE_GRAPHQL_API_KEY
       }
     }
+  });
+  console.log('[Amplify] configured from environment variables', {
+    endpoint: import.meta.env.VITE_GRAPHQL_ENDPOINT,
+    region: import.meta.env.VITE_AWS_REGION
   });
 }
 
