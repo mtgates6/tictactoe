@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { client } from '../amplifyClient';
+import { client } from '@amplifyClient';
 
 interface GameSummary {
   id: string;

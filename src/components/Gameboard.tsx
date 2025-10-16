@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { client } from '../amplifyClient';
+import { client } from '../amplifyClient.dev';
 import Confetti from 'react-confetti';
 import { Square } from './Square';
 
