@@ -5,9 +5,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@amplifyClient': process.env.VITE_USE_LOCAL_AMPLIFY === 'true'
-        ? '/src/amplifyClient.dev.ts'
-        : '/src/amplifyClient.prod.ts'
+      '@amplifyClient': '/src/amplifyClient.ts'
     }
   }
 });

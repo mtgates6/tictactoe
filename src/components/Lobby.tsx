@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { client } from '@amplifyClient';
+import { client } from '../amplifyClient';
 
 interface GameSummary {
   id: string;
@@ -48,7 +48,8 @@ export const Lobby: React.FC = () => {
   // Join an existing game
   const joinGame = async (gameId: string) => {
     const gameResult = await client.models.Game.get({ id: gameId });
-    if (gameResult.data?.playerX && !gameResult.data?.playerO) {
+    const game = gameResult.data;
+    if (game?.playerX && !game?.playerO) {
       await client.models.Game.update({ id: gameId, playerO: 'Player O' });
     }
     navigate(`/game/${gameId}`);
