@@ -55,6 +55,17 @@ export const GameBoard: React.FC = () => {
     });
   };
 
+   const handleQuit = async () => {
+    const confirmQuit = window.confirm('Are you sure you want to quit and delete this game?');
+    if (!confirmQuit) return;
+    try{
+      await client.models.Game.delete({ id: gameId! });
+      navigate("/");
+    } catch (error) {
+      console.error('[Gameboard] quit:error', error);
+    }
+   };
+
   const calculateWinner = (board: (string | null)[]) => {
     const lines = [
       [0,1,2],[3,4,5],[6,7,8],
@@ -64,17 +75,37 @@ export const GameBoard: React.FC = () => {
     for (let [a,b,c] of lines) {
       if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
     }
+    if (board.every(cell => cell !== null)) return 'Tie';
     return null;
   };
 
   if (!game) return <p>Loading game...</p>;
+  const playerXColor = (playerSymbol === 'X') ? '#1859adff' : 'inherit';
+  const playerOColor = (playerSymbol === 'O') ? '#9a18a5ff' : 'inherit';
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h2>{game.playerX} vs {game.playerO ?? 'Waiting for Player O'}</h2>
-      <p>Turn: {game.currentTurn}</p>
-      {game.winner && <p style={{ color: '#388e3c', fontWeight: 'bold' }}>Winner: {game.winner} 🎉</p>}
-      {game.winner && <Confetti />}
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      minHeight: '100vh' }}>
+      <h2>
+        <span style={{color:playerXColor}}>{game.playerX}</span> 
+        <span> vs </span>
+        <span style={{color:playerOColor}}>{game.playerO ?? 'Waiting for Player O'}</span>
+    </h2>
+      
+      {game.winner ? (
+          game.winner === 'Tie' ? (
+            <p style={{ fontWeight: 'bold' }}>Tie 🐱</p>
+          ) : (
+            <p style={{ color: '#388e3c', fontWeight: 'bold' }}>Winner: {game.winner} 🎉</p>
+            )
+          ) : (
+            <p>Turn: {game.currentTurn}</p>
+        )}
+        {(game.winner == 'X' || game.winner == "O") && <Confetti />}
 
       <div style={{
         display: 'grid',
@@ -121,6 +152,16 @@ export const GameBoard: React.FC = () => {
     Play Again
   </button>
 )}
+  <button style={{ 
+      marginTop: '1rem',
+      padding: '0.5rem 1rem',
+      fontSize: '1rem',
+      backgroundColor: '#1976d2',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px', 
+      cursor: 'pointer' }}
+      onClick={handleQuit}>Back to Lobby</button>
     </div>
   );
 };
