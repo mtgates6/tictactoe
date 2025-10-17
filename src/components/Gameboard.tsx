@@ -112,7 +112,8 @@ export const GameBoard: React.FC = () => {
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '12px',
         maxWidth: '280px',
-        margin: '1rem auto'
+        margin: '0 auto',
+        justifyContent: 'center'
       }}>
         {game.board.map((value: string | null, idx: number) => (
           <Square key={idx} value={value} onClick={() => handleClick(idx)} />
